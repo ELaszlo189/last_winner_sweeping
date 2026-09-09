@@ -1,0 +1,194 @@
+[
+ {
+  "address": "0xa279ffefcef40e9d2815227bdbf82ba2eff05dc1",
+  "role": "loose-ETH collector",
+  "phase": "July 2026",
+  "notes": "27,231 victim EOAs -> here -> one 2907.12 ETH hop to 0xe4a219fbed"
+ },
+ {
+  "address": "0xe4a219fbed16e5c62e335082521f44c508b19191",
+  "role": "cold park",
+  "phase": "July 2026",
+  "notes": "holds 2,907.12 ETH untouched since 2026-07-28"
+ },
+ {
+  "address": "0x8d7c20e3b88bc70246306d9620c2d555448523f7",
+  "role": "dust collector + burst-2 gas source",
+  "phase": "Aug 24 2026",
+  "notes": "30,364 victim EOAs -> here (~102 ETH dust); also seeds burst-2 gas"
+ },
+ {
+  "address": "0x8f55b448e055d5c83bd60a0d7c2038fe0b0a7fac",
+  "role": "burst-1 sweep collector",
+  "phase": "burst-1 (Apr-Aug 2026)",
+  "notes": "withdraw() proceeds; shares 0x8f55.../...fac vanity affix with a gas funder"
+ },
+ {
+  "address": "0x096a5938ae01ef7bd39fb2f80b62d6657889a0f8",
+  "role": "burst-1 gas funder",
+  "phase": "burst-1",
+  "notes": "2018-08-06 wallet; first funded by 0x4ce9f39d (Cluster A bankroll)"
+ },
+ {
+  "address": "0x5723168bfdf49d832b3a09fd028c3b03ec7bfd52",
+  "role": "burst-2 sweep collector",
+  "phase": "burst-2 (Aug-Sep 2026)",
+  "notes": "holds ~62 ETH; first funded by 0x86c6391d (2018-08-07 wallet)"
+ },
+ {
+  "address": "0x220ecbb6c968fbd6f73cfe56017d78fcc4f18647",
+  "role": "burst-2 pool / park",
+  "phase": "burst-2 (Aug 31-Sep 2)",
+  "notes": "1000+ inbound legs, holds 19.99 ETH, ZERO outbound - consolidate-and-hold"
+ },
+ {
+  "address": "0x99e03db23a79125f0128288611feedf270a758e4",
+  "role": "burst-2 dispatcher funder",
+  "phase": "burst-2",
+  "notes": "2020-04-26 wallet; funded 0xcf49c8fb with 10.23 ETH on 2026-08-31"
+ },
+ {
+  "address": "0xcf49c8fb434af3a2cde64fe3907ce27bf1317762",
+  "role": "burst-2 dispatcher",
+  "phase": "burst-2",
+  "notes": "split 10.23 ETH into 15 x 0.6318 ETH + 1 x 0.75 to the worker fleet, 2026-08-31"
+ },
+ {
+  "address": "0xcfb154565b62f7d68d86d33341a583ed0cd3b8be",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #2: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x3886b93a0c4f9b214d50fd6e6d268f5937dbd1e4",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #3: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0xce7e00a886656ff7f05c561e495cbb9a9c1b584b",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #4: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x6f23354c0f5de3e80493bbbefe819862f21155d6",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #5: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x71c4798b25d90c751eeca46ab4330e74114c64df",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #6: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x09b98a0965244e7dc64d727d80a73f12d2ade126",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #7: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x97dac64bc5f98d215eff1d3d7f8d544ba13aacd4",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #8: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x0e6e1be9d6ffd6732eaf355816b50f14ae074df0",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #9: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0xd7649a8405754f7c64ebf170d6b23263976d408e",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #10: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0xc3e86a8e4dfa1a4fb319603a9886e0f73e8f6e6f",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #11: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x13cbe3824066fe0b855296fd146d9a661fdba6b2",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #12: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x2ce7230e56ad6dbabb014ee17935c4f47af829a4",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #13: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0xed5403aea6023a1d752479162e19d6ce585b6ef6",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #14: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0xebd282d4ad450a5275ca44589f73e6623ec1e948",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #15: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x5dd0fc9cf6170fa913c195934ba65626e97ec5d2",
+  "role": "burst-2 worker (gas-drip + collect)",
+  "phase": "burst-2 (Aug 31-Sep 4)",
+  "notes": "worker #16: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here"
+ },
+ {
+  "address": "0x3f3ee0a9cac2d01db44001eca3e8382fbe40207b",
+  "role": "downstream hub (EOA)",
+  "phase": "burst-2",
+  "notes": "high-velocity plain-transfer EOA"
+ },
+ {
+  "address": "0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae",
+  "role": "bridge",
+  "phase": "burst-2",
+  "notes": "LiFiDiamond = LI.FI bridge/swap aggregator (mainstream contract) - some funds bridged/swapped"
+ },
+ {
+  "address": "0x4ce9f39d3a0426d8d1f2ad4fcff0b92e86b9b914",
+  "role": "2018 bankroll 'Cluster A'",
+  "phase": "bootstrap",
+  "notes": "seeded burst-1 gas funder; mutual-only 5-wallet cluster, stopped 2026-03-14"
+ },
+ {
+  "address": "0x696e01b63189fc476051122c15fcf57b05292cac",
+  "role": "2018 fleet wallet",
+  "phase": "bootstrap",
+  "notes": "seeded July collector 0xa279ffef; itself a track-A sweeper WITH an LW vault"
+ },
+ {
+  "address": "0x260d1c4724d15ae5c882d365886fb8cae70a746c",
+  "role": "2018 fleet wallet",
+  "phase": "bootstrap",
+  "notes": "seeded Aug-24 collector 0x8d7c20e3; itself track-A; first tx 2018-08-08"
+ },
+ {
+  "address": "0x86c6391dccf7c73b2119c0fa2630f1fdb5819741",
+  "role": "2018 fleet wallet",
+  "phase": "bootstrap",
+  "notes": "seeded burst-2 collector 0x5723168b; first tx 2018-08-07"
+ },
+ {
+  "address": "0xa707034429c8e4e01df056c0cbcf478f0fbefad7",
+  "role": "SEPARATE drainer (public 'Fake_Phishing2831105')",
+  "phase": "2026-04-29..05-07",
+  "notes": "577 wallets / 326.8 ETH -> THORChain -> BTC/XMR. Only 11 shared victims, ZERO shared infra. Different operator, overlapping compromised keys."
+ },
+ {
+  "address": "0xa271266ea7cf6863e518edc7bb2607349cde2cf1",
+  "role": "funder of sequential-pID 2026 rebind wallets",
+  "phase": "2026-08",
+  "notes": "funded 0x0d4a2d5a etc. (pIDs 89135+) that hold un-withdrawn 2018 gen vaults"
+ }
+]

@@ -1,0 +1,33 @@
+address,role,phase,notes
+0xa279ffefcef40e9d2815227bdbf82ba2eff05dc1,loose-ETH collector,July 2026,"27,231 victim EOAs -> here -> one 2907.12 ETH hop to 0xe4a219fbed"
+0xe4a219fbed16e5c62e335082521f44c508b19191,cold park,July 2026,"holds 2,907.12 ETH untouched since 2026-07-28"
+0x8d7c20e3b88bc70246306d9620c2d555448523f7,dust collector + burst-2 gas source,Aug 24 2026,"30,364 victim EOAs -> here (~102 ETH dust); also seeds burst-2 gas"
+0x8f55b448e055d5c83bd60a0d7c2038fe0b0a7fac,burst-1 sweep collector,burst-1 (Apr-Aug 2026),withdraw() proceeds; shares 0x8f55.../...fac vanity affix with a gas funder
+0x096a5938ae01ef7bd39fb2f80b62d6657889a0f8,burst-1 gas funder,burst-1,2018-08-06 wallet; first funded by 0x4ce9f39d (Cluster A bankroll)
+0x5723168bfdf49d832b3a09fd028c3b03ec7bfd52,burst-2 sweep collector,burst-2 (Aug-Sep 2026),holds ~62 ETH; first funded by 0x86c6391d (2018-08-07 wallet)
+0x220ecbb6c968fbd6f73cfe56017d78fcc4f18647,burst-2 pool / park,burst-2 (Aug 31-Sep 2),"1000+ inbound legs, holds 19.99 ETH, ZERO outbound - consolidate-and-hold"
+0x99e03db23a79125f0128288611feedf270a758e4,burst-2 dispatcher funder,burst-2,2020-04-26 wallet; funded 0xcf49c8fb with 10.23 ETH on 2026-08-31
+0xcf49c8fb434af3a2cde64fe3907ce27bf1317762,burst-2 dispatcher,burst-2,"split 10.23 ETH into 15 x 0.6318 ETH + 1 x 0.75 to the worker fleet, 2026-08-31"
+0xcfb154565b62f7d68d86d33341a583ed0cd3b8be,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #2: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x3886b93a0c4f9b214d50fd6e6d268f5937dbd1e4,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #3: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0xce7e00a886656ff7f05c561e495cbb9a9c1b584b,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #4: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x6f23354c0f5de3e80493bbbefe819862f21155d6,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #5: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x71c4798b25d90c751eeca46ab4330e74114c64df,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #6: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x09b98a0965244e7dc64d727d80a73f12d2ade126,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #7: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x97dac64bc5f98d215eff1d3d7f8d544ba13aacd4,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #8: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x0e6e1be9d6ffd6732eaf355816b50f14ae074df0,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #9: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0xd7649a8405754f7c64ebf170d6b23263976d408e,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #10: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0xc3e86a8e4dfa1a4fb319603a9886e0f73e8f6e6f,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #11: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x13cbe3824066fe0b855296fd146d9a661fdba6b2,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #12: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x2ce7230e56ad6dbabb014ee17935c4f47af829a4,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #13: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0xed5403aea6023a1d752479162e19d6ce585b6ef6,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #14: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0xebd282d4ad450a5275ca44589f73e6623ec1e948,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #15: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x5dd0fc9cf6170fa913c195934ba65626e97ec5d2,burst-2 worker (gas-drip + collect),burst-2 (Aug 31-Sep 4),worker #16: ~0.632 ETH seed from 0xcf49c8fb; ~788 victims each - drip ~0.003 ETH gas -> victim withdraw() -> sweep back here
+0x3f3ee0a9cac2d01db44001eca3e8382fbe40207b,downstream hub (EOA),burst-2,high-velocity plain-transfer EOA
+0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae,bridge,burst-2,LiFiDiamond = LI.FI bridge/swap aggregator (mainstream contract) - some funds bridged/swapped
+0x4ce9f39d3a0426d8d1f2ad4fcff0b92e86b9b914,2018 bankroll 'Cluster A',bootstrap,"seeded burst-1 gas funder; mutual-only 5-wallet cluster, stopped 2026-03-14"
+0x696e01b63189fc476051122c15fcf57b05292cac,2018 fleet wallet,bootstrap,seeded July collector 0xa279ffef; itself a track-A sweeper WITH an LW vault
+0x260d1c4724d15ae5c882d365886fb8cae70a746c,2018 fleet wallet,bootstrap,seeded Aug-24 collector 0x8d7c20e3; itself track-A; first tx 2018-08-08
+0x86c6391dccf7c73b2119c0fa2630f1fdb5819741,2018 fleet wallet,bootstrap,seeded burst-2 collector 0x5723168b; first tx 2018-08-07
+0xa707034429c8e4e01df056c0cbcf478f0fbefad7,SEPARATE drainer (public 'Fake_Phishing2831105'),2026-04-29..05-07,"577 wallets / 326.8 ETH -> THORChain -> BTC/XMR. Only 11 shared victims, ZERO shared infra. Different operator, overlapping compromised keys."
+0xa271266ea7cf6863e518edc7bb2607349cde2cf1,funder of sequential-pID 2026 rebind wallets,2026-08,funded 0x0d4a2d5a etc. (pIDs 89135+) that hold un-withdrawn 2018 gen vaults

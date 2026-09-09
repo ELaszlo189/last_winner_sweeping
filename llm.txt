@@ -1,0 +1,231 @@
+# llm.txt — LastWinner 2026 vault-drain investigation
+
+You are reading a research repo. This file orients an LLM (or a human in a hurry) so you can
+continue the investigation without re-deriving what is already known. Ground truth is on-chain;
+verify claims against Etherscan. `summary.json` is the authoritative detailed record.
+
+====================================================================
+FACT / INTERPRETATION / ALTERNATIVES  (the 30-second version)
+====================================================================
+FACT (on-chain):
+ - Since May 2026 one entity has swept ~44,000 wallets tied to the 2018 game LastWinner:
+   loose EOA ETH (~3,000 ETH) + in-contract game vaults via withdraw() (~1,545 ETH;
+   contract 3,970.71 -> 2,425.63 ETH).
+ - ~80-85% of the swept wallets provably touched the LastWinner contract; ~2/3 were funded
+   by Huobi/HTX + BW.com withdrawals; ~44% used a Nov-2018 ETH pooling contract ("coToken").
+ - ~4,550 ETH moved; mostly PARKED as of early Sep 2026 (2,907 ETH unmoved in 0xe4a219fbed).
+ - A SEPARATE operator (0xA707, publicly reported Apr-30) swept ~11-16 of the same wallets
+   days earlier; its other 561 victims are unrelated.
+ - ~1,000 still-unclaimed vaults belong to self-destructed 2018 airdrop-exploit contracts
+   (permanently stuck).
+WE THINK:
+ - The ~44k wallets are one 2018 LastWinner farming operation (or mostly one).
+ - The 2026 sweep is slightly more likely a consolidation by the rightful keyholder than a
+   theft (methodical, works empty wallets, parks not dumps). ~50/50.
+ - Keys probably exposed by weak 2018 key generation, not a targeted breach.
+COULD BE INSTEAD:
+ - A mix: one farm + independent farmers + retail.
+ - A theft (phishing label; part of the April-2026 weak-key wave; a real user claimed a
+   wallet). Tips this way if the parked ETH cashes out or the key flaw is reproducible.
+ - 2-3 parties / a sweeper service, not one person.
+ - "Funded by Huobi" could just mean ordinary Chinese gamblers, not a coordinated farm.
+
+====================================================================
+WHAT THIS IS
+====================================================================
+Contract: LastWinner  0xDd9fd6b6F8f7ea932997992bbE67EabB3e316f3C  (Ethereum mainnet)
+ - A 2018 FoMo3D clone (gambling game). Source never verified. Deployed 2018-08-06.
+ - Held 3,970.71 ETH on 2026-03-31; holds 2,425.63 ETH now.
+In 2026 one entity holding private keys to ~44,000 wallets of a 2018 farming fleet is
+sweeping those wallets: loose ETH (~3,000 ETH) + in-game vaults via withdraw() (~1,545 ETH),
+then consolidating and mostly PARKING the proceeds (2,907 ETH unmoved since 2026-07-28).
+A SEPARATE operator (0xA707, publicly reported 2026-04-30 as a "dormant wallet hack") swept ~11-16
+of the same wallets days earlier. That public coverage is about 0xA707, not this ~44k sweep;
+this sweep does not appear to have been publicly reported or tied to LastWinner.
+
+====================================================================
+HARD FACTS (on-chain; safe to build on)
+====================================================================
+- Drained set: 44,014 unique EOAs (data/drained_eoas.csv).
+    * 25,328 called withdraw() on LastWinner in 2026.
+    * 33,374 had loose ETH swept to a collector (track A).
+    * 80.7% (35,527) confirmed ever interacted with LastWinner; ~15% never did but are the
+      same fleet by funder + creation window (the rest is scan-window incompleteness).
+- Funding: ~2/3 of the fleet's wallets were first-funded by an ETH WITHDRAWAL from an
+  exchange hot wallet - HTX/Huobi (5: 0x4ce9f39d3a, 0x1d1e10e8c6, 0xecd8b3877d, 0xeb6d43fe24,
+  0x25c6459e5c) + BW.com (1: 0x73957709). Sent-tx counts 12k-773k, ~700-900 counterparties per
+  1000 tx => exchange hot wallets. "Funded via Huobi" is a WEAK signal (Huobi = the dominant
+  2018 Chinese exchange). A mass 0.0025-ETH sweep from these to 0xa03400e098 (a live HTX hot
+  wallet, nonce ~980k) on 2026-03-14 is HTX hot-wallet consolidation, unrelated to this operation.
+- coToken pool 0x03cb0021 (name()='coToken'): a SMALL ETH deposit/withdraw pooling contract,
+  ~187 ETH, 552 depositors, active ONLY 2018-11-04..11-29 (matches the Nov-2018 fleet wave).
+  Deployer 0xcbeb72c160 funded from OKX, ZERO link to the LastWinner deployer/contract. A
+  co-investment / pooled-betting vehicle used by ~44% of the drained fleet - NOT the game's
+  operator. This is now the strongest single piece of evidence that PART of the fleet was
+  a coordinated operation.
+- 2026 drain infrastructure (all in data/infra_addresses.csv):
+    burst-1 collector 0x8f55b448e055d5c83bd60a0d7c2038fe0b0a7fac ; gas 0x096a5938ae01ef7bd39fb2f80b62d6657889a0f8
+    burst-2 collector 0x5723168bfdf49d832b3a09fd028c3b03ec7bfd52 ; dispatcher 0xcf49c8fb434af3a2cde64fe3907ce27bf1317762 + 16 workers
+    July loose-ETH collector 0xa279ffefcef40e9d2815227bdbf82ba2eff05dc1 -> park 0xe4a219fbed16e5c62e335082521f44c508b19191 (2,907 ETH, unmoved)
+    Aug-24 dust collector 0x8d7c20e3b88bc70246306d9620c2d555448523f7
+  The drain infra has NO direct tx with the exchange hot wallets, but is bootstrapped from reactivated 2018
+  fleet wallets (e.g. 0x696e01b6, itself a Cluster-A-funded fleet wallet that funded the July collector).
+- BAPT-LW20 (the 2018 airdrop exploiter): paymaster 0x9c1065e4a2fe67715ce82772cfc223bd76009451
+  (active only 2018-08-10), collector 0xae587866822dced0c4b5a0b534ec025b52c4acd0,
+  named account 0x820d115b9c98... ("0x820D" in the 2018 write-ups). ~1,000 proxy contracts,
+  self-destructed -> their in-game vaults are PERMANENTLY STUCK and are a large fraction of the
+  2,425 ETH still in the contract. No on-chain link to the fleet / game operator / coToken.
+- Separate 2026 drainer 0xA707034429c8E4E01df056C0CbCf478F0FBeFAd7 ("Fake_Phishing2831105"):
+  577 victims / 326.8 ETH -> THORChain -> BTC+XMR, Apr 29 - May 7 2026. Shares exactly 11
+  victims (16 LastWinner players) with our operation; its other 561 victims are unrelated
+  2017-2026 wallets. INCIDENTAL overlap, not a shared keystore. On the 11: 0xA707 took the
+  loose EOA balance on 2026-04-30; our op later withdrew() the in-contract vault (different money).
+
+====================================================================
+CONFIDENCE / WHAT IS DISPUTED
+====================================================================
+- FACT: one entity controls the whole ~44k fleet and is draining it (uniform gas-drip from
+  shared funders, same-minute gas->withdraw()->sweep, shared rotating collectors).
+- PLAUSIBLE but NOT PROVEN: the fleet is one 2018 operation. Support: ~44% used the coToken
+  pool; shared Aug+Nov 2018 creation windows; the uniform 2026 drain. Against: 'shared funders'
+  turned out to be exchange hot wallets (weak); ~15% never touched LastWinner; behaviour is
+  heterogeneous. Could be one farm, or a farm + independent farmers + retail.
+- NO identified private bankroll entity. The wallets thought to be one were HTX/BW hot wallets.
+- OPEN, ~50/50: is the 2026 drainer the rightful keystore holder (consolidation) or someone
+  who obtained the keys (theft)? For consolidation: an ORGANISED ~44k-key roster worked
+  methodically, unhurried park-don't-cash-out behaviour (2,907 ETH unmoved 40+ days), the
+  ~44% coToken-pool subset. For theft: public "hack" framing, Etherscan phishing label, at
+  least one affected user claiming a wallet, part of a broader April-2026 weak-key wave.
+  The 2026-03-14 mass sweep of the six funding wallets is NOT a data point here - it was HTX
+  hot-wallet housekeeping.
+- Numbers: withdraw() extraction 1,545 ETH is RPC-reconciled exact (3,970.71 -> 2,425.63).
+  Track-A "2,907 ETH" is one on-chain transfer. "44,014 drained" is a union of confirmed
+  withdraw() callers + confirmed track-A senders (see scripts).
+
+====================================================================
+OPEN QUESTIONS (ranked) + HOW TO ATTACK EACH
+====================================================================
+1. THE KEY-COMPROMISE VECTOR. How were ~44k private keys obtained? Candidates: (a) weak RNG in
+   the 2018 wallet generator / LastWinner app (cf. SECBIT "Trust Wallet's Fomo3D Summer",
+   srand(time(NULL))); (b) one master HD seed / keystore file; (c) a leaked custodial backend.
+   -> Get the 2018 LastWinner Android/iOS app binary or its front-end JS (site lastwinner.me is
+      dead; try web.archive.org CDX for lastwinner.me/download.html and assets/lw.js c.2018).
+   -> If a cracked-key structure is ever published (e.g. "top N bits zero", "keccak(seed|counter)"),
+      test it against data/drained_eoas.csv.
+   -> Distinguishes "finite exposure" (a file) from "open-ended" (a reproducible RNG bug).
+
+2. CONSOLIDATION vs THEFT. Would flip toward theft if the vector is a reproducible weak RNG
+   (anyone can regenerate keys). Would flip toward consolidation if it's a single keystore only
+   the operators held. Also: watch 0xe4a219fbed (2,907 ETH) — a fast bridge/exchange move =
+   more theft-like; continued parking / redeployment = more owner-like.
+
+3. WHO OPERATED THE 2018 FLEET? No private bankroll entity identified (the wallets thought to
+   be one are HTX/BW hot wallets). Is it one farm, or farmers + retail? Attack: map the coToken
+   pool's 552 depositors (data would need pulling) and see how much of the drained set they
+   cover; cluster the fleet by 2nd-hop funder (the wallet that funded the Huobi-withdrawal
+   recipient is more informative); check the Ant Swarm promoter wallets if 2018 Chinese sources
+   name any. The deployer 0xeae69cad is a throwaway with no links.
+
+4. SIZE THE PERMANENTLY-STUCK ETH. Of the 2,425 ETH still in the contract, how much is in
+   self-destructed BAPT-LW20 proxies (unrecoverable) vs live EOAs (recoverable iff a key
+   exists)? Method: for each address in data/unclaimed.json, Etherscan getcontractcreation
+   (was it ever a contract) + eth_getCode (alive now). Sampling so far: ~700 of the top-900
+   unclaimed by value (~440 ETH) are self-destructed 2018 proxies. This scan was started and
+   not finished (rate limits) — finish it.
+
+5. CHARACTERISE THE NON-LASTWINNER ~15%. ~6,500 drained wallets never called the contract.
+   Are they proxy-mediated players (their contract played), pure reserve wallets, or used for
+   other 2018 ventures? Check their 2018 outbound for other game contracts / DEXes.
+
+6. DOWNSTREAM OF THE PARKED ETH. 0xe4a219fbed (2,907), 0x8d7c20e3 (102), 0x5723168b (~62),
+   0x220ecbb6 (20). None cashed out as of early Sep 2026. Monitor. Also identify
+   0xa03400e098 = a live HTX hot wallet (nonce ~980k); the 2026-03-14 sweep to it was HTX housekeeping.
+
+7. RELATION TO THE WIDER APRIL-2026 DORMANT-WALLET WAVE. 0xA707 is one of several drainers in
+   that wave (WazzCrypto/Specter). Are the others also generic weak-key sweepers, or is there a
+   coordinated campaign? Cross-reference 0xA707's 561 non-LastWinner victims (data/a707_senders_full.json)
+   against other flagged drainers.
+
+====================================================================
+GOTCHAS
+====================================================================
+- Alchemy/Infura free tier: eth_getLogs is capped (10-block range) and JSON-RPC batching may be
+  refused. eth_call / eth_getBalance / eth_getCode single calls are fine. Use Etherscan for
+  transaction history; it pages ~1000 rows/query and rate-limits at ~3-5 req/s.
+- balances.json (the per-player vault snapshot) is NOT in this repo. It was an external input. 
+  Regenerate via getPlayerInfoByAddress(address) per pID, or from event logs.
+- FoMo3D pID<->address mechanics: the address bound to a player-ID is set on first interaction
+  (determinePID: plyr_[pID].addr = msg.sender). Re-pointing an existing pID to a new address is
+  PERMISSIONED — you must already control an address on that pID (PlayerBook addMeToGame /
+  registerNameX*). No admin override, no permissionless claim. We found NO pID re-pointing in
+  this operation; the drain calls withdraw() straight from the compromised 2018 EOAs.
+- Some "nonce 0 at block X" reads are misleading: a self-destructed contract also has nonce 0
+  and no later txs. Confirm dead-contract status with getcontractcreation + eth_getCode.
+- Vanity look-alikes: 0xa707... and 0x5723... prefixed addresses send 0-value address-poisoning
+  txs at victims. Ignore 0-value transfers when following the money.
+
+
+====================================================================
+ASSUMPTIONS / CONCLUSIONS THAT COULD BE WRONG — CONFRONT THESE
+====================================================================
+(Every item is a place a plausible-looking read could be wrong. E.g. the six wallets that fund
+ most of the fleet look like a private "bankroll" but are HTX/BW exchange hot wallets. Verify
+ everything against chain.)
+
+A. "The ~44,014 drained addresses are ONE 2018 farming operation." PLAUSIBLE, not proven.
+   Could be: one farm + independent small farmers + retail, all lumped together because they
+   (a) played LastWinner and (b) got drained in 2026. The set is a UNION of "2026 withdraw()
+   callers" + "track-A loose-ETH senders" - defensible as "the drained set", weaker as "one
+   fleet". Only ~44% used the coToken pool; the other ~56% could be anyone.
+
+B. "One entity controls all 44k keys." Strong (uniform gas-drip, same-minute
+   gas->withdraw()->sweep, shared rotating collectors) but could be 2-3 cooperating parties,
+   or a sweeper/"recovery" SERVICE acting for multiple key-owners. The 0xA707 case proves
+   multiple unrelated parties can hold overlapping keys.
+
+C. "~1,545 ETH via withdraw()." RPC-reconciled (3,970.71 -> 2,425.63) so solid - but assumes
+   ~0 ETH flowed INTO the contract in the window (checked: 10 dust buyXid txs). A selfdestruct
+   into the contract or a mis-attributed internal tx could shift it slightly.
+
+D. "2,907 ETH parked, nothing cashed out." TRUE ONLY AS OF EARLY SEP 2026. It's a snapshot.
+   Re-check 0xe4a219fbed / 0x8d7c20e3 / 0x5723168b / 0x220ecbb6 before relying on it - a
+   later bridge/mixer/exchange move flips the consolidation-vs-theft read.
+
+E. "BAPT-LW20 dead proxies are a large share of the stuck 2,425 ETH." SAMPLE-BASED (29/30 of
+   the top-900 nonce-0 unclaimed = self-destructed). The full scan of data/unclaimed.json was
+   NOT finished. The exact permanently-stuck amount is an estimate.
+
+F. "80.7% of the drained set touched LastWinner." The caller scan converged only through
+   ~mid-Sep 2018. The 19% "unknown" is really "not confirmed" - a full-history sample of that
+   group found 60% DID call the contract (Sep-Nov 2018). "Never touched" is ~15%, itself an estimate.
+
+G. "0xA707 overlap is incidental." Based on a 120-sample of its 561 non-LastWinner victims
+   (spanning 2017-2026, not Huobi-2018-funded). If a larger sample showed 0xA707's victims
+   ARE the same 2018 Huobi-funded cohort, the "shared keystore" reading revives.
+
+H. "coToken is not the game operator." Based on ZERO direct txs between the coToken deployer
+   (0xcbeb72c160) and the LastWinner deployer/contract. Absence of a direct link != no
+   relationship. coToken's 552 depositors were NOT checked against any operator wallets.
+
+I. "The game deployer 0xeae69cad tells us nothing." It's minimal (23 tx) but its ~5 payout
+   counterparties (0xccd8c1134b, 0xf8a80292ac, 0x531a4e109807, ...) were not traced - one could
+   be an operator wallet.
+
+J. 2018 identity claims ("Ant Swarm pyramid", "~200k ETH bot funding", "5,194 ETH airdrop
+   theft") are from SECBIT / BlockBeats / Zhongqiang Chen - NOT independently re-verified here.
+
+K. "Consolidation vs theft ~50/50" is a JUDGEMENT, not a measurement. Weighting "public hack
+   framing + phishing label" against "parks-don't-dump + organised roster" is subjective;
+   a reasonable analyst could land 70/30 either direction.
+
+L. Meta: this may be a known / benign operation (a licensed recovery service, or the operators
+   openly reclaiming) that merely looks dramatic on-chain. No comms / attribution confirm it either way.
+
+====================================================================
+HOW TO CONTINUE / CONTRIBUTE
+====================================================================
+- Everything reconciles against Etherscan. If a number here disagrees with the chain, the chain wins.
+- scripts/ has the clean reproducers; scratch/ has the raw one-off scripts (named badly but each
+  one derives a specific finding — grep for an address to find the script that touched it).
+- If you resolve an open question, update summary.json (keep the "REVISION"/"SUPERSEDED" style so
+  the audit trail survives) and open a PR / reply on the thread this was shared from.

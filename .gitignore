@@ -1,0 +1,22 @@
+# secrets — never commit
+.env
+*.pem
+*.key
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# investigation artifacts / checkpoints (regenerable)
+*_ckpt*.json
+uf*_ckpt.json
+lw_senders_ckpt*.json
+
+# local scratch dumps not meant for the repo
+balances.json
+norm.json
+intl.json
+
+# app-hunt working dir (not part of this release)
+app_hunt/

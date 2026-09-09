@@ -1,0 +1,5 @@
+requests
+python-dotenv
+web3
+eth-utils
+eth-abi
