@@ -6,13 +6,11 @@ several are 2018 contemporaneous reports and 2026 news coverage.
 
 ## LastWinner (2018) — security & background
 
-- **SECBIT Labs — "Last Winner 的最后赢家 — 智能合约超大规模黑客攻击手法曝光"** (2018-08-20)
+- **SECBIT Labs — "Last Winner 的最后赢家"** (2018-08-20)
   https://secbit.io/blog/2018/08/20/last-winner-of-lastwinner/
-  The core Chinese-language technical analysis: the airdrop-randomness exploit, the ~1,000
-  pre-deployed attacker proxy contracts ("BAPT-LW20"), ~50k attack txs, ~5,194 ETH taken;
-  confirms LastWinner shipped Android + iOS apps and was promoted by a "蟻群 / Ant Swarm"
-  fundraising-pyramid group; mentions the alleged ~200,000 ETH of operator bot funding and the
-  airdrop rate raised to 10%.
+  Chinese-language analysis of LastWinner. Used here for the background it establishes:
+  LastWinner shipped Android + iOS apps, was promoted by a "蟻群 / Ant Swarm" fundraising-pyramid
+  group, and the alleged ~200,000 ETH of operator bot funding.
   Mirrors: https://zhuanlan.zhihu.com/p/42318584 · https://www.freebuf.com/vuls/181486.html
 
 - **SECBIT Labs — "Trust Wallet's Fomo3D Summer"** (2024)
@@ -20,15 +18,6 @@ several are 2018 contemporaneous reports and 2026 news coverage.
   seeded its RNG with `srand((unsigned)time(NULL))`, producing same-second wallet collisions;
   >2,100 ETH later drained, and many of the affected wallets had been created specifically to
   play FoMo3D.
-
-- **Zhongqiang Chen — "Randomness in smart contracts is predictable and vulnerable: LastWinner
-  (Part 1 & 2)"** (Medium)
-  https://medium.com/@zhongqiangc/randomness-in-smart-contracts-is-predictable-and-vulnerable-lastwinner-part-1-da40131b7ab0
-  Part 2: https://medium.com/@zhongqiangc/randomness-in-smart-contracts-is-predictable-and-vulnerable-lastwinner-part-2-4700ca144ac0
-  Companion FoMo3D pieces: .../fomo3d-part-2-f20055d80d9
-  The exact block-variable RNG (`block.timestamp/difficulty/coinbase/gaslimit/number/msg.sender`,
-  `seed % 1000 < airDropTracker_`), the attack-contract deployer prefixed `0x820D`
-  (2018-07-26), the ~30k attack txs over LastWinner's first days.
 
 - **jiemian.com — "8万笔交易「封死」以太坊网络，只为抢夺 Fomo3D 大奖？"** (2018)
   https://www.jiemian.com/article/2372992.html
@@ -69,6 +58,6 @@ several are 2018 contemporaneous reports and 2026 news coverage.
 ## Mechanics reference
 
 - **FoMo3D source (`FoMo3Dlong` + PlayerBook)** — for `determinePID`, `withdraw`,
-  `registerNameXID`, `addMeToGame`, `airdrop()`, and the pID↔address binding rules referenced
+  `registerNameXID`, `addMeToGame`, and the pID↔address binding rules referenced
   in `llm.txt`. Widely mirrored; the LastWinner deployment is unverified but bytecode-identical
   in the relevant functions.

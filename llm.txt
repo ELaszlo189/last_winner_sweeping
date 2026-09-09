@@ -16,8 +16,8 @@ FACT (on-chain):
  - ~4,550 ETH moved; mostly PARKED as of early Sep 2026 (2,907 ETH unmoved in 0xe4a219fbed).
  - A SEPARATE operator (0xA707, publicly reported Apr-30) swept ~11-16 of the same wallets
    days earlier; its other 561 victims are unrelated.
- - ~1,000 still-unclaimed vaults belong to self-destructed 2018 airdrop-exploit contracts
-   (permanently stuck).
+ - ~1,000 still-unclaimed vaults belong to 2018 contracts that self-destructed (no code,
+   no key) - permanently stuck.
 WE THINK:
  - The ~44k wallets are one 2018 LastWinner farming operation (or mostly one).
  - The 2026 sweep is slightly more likely a consolidation by the rightful keyholder than a
@@ -70,11 +70,10 @@ HARD FACTS (on-chain; safe to build on)
     Aug-24 dust collector 0x8d7c20e3b88bc70246306d9620c2d555448523f7
   The drain infra has NO direct tx with the exchange hot wallets, but is bootstrapped from reactivated 2018
   fleet wallets (e.g. 0x696e01b6, itself a Cluster-A-funded fleet wallet that funded the July collector).
-- BAPT-LW20 (the 2018 airdrop exploiter): paymaster 0x9c1065e4a2fe67715ce82772cfc223bd76009451
-  (active only 2018-08-10), collector 0xae587866822dced0c4b5a0b534ec025b52c4acd0,
-  named account 0x820d115b9c98... ("0x820D" in the 2018 write-ups). ~1,000 proxy contracts,
-  self-destructed -> their in-game vaults are PERMANENTLY STUCK and are a large fraction of the
-  2,425 ETH still in the contract. No on-chain link to the fleet / game operator / coToken.
+- ~1,000 of the still-unclaimed vaults belong to 2018 contracts that were batch-created on
+  2018-08-16/17 and self-destructed the same day - no code, no key, so those vaults are
+  PERMANENTLY STUCK and are a large fraction of the 2,425 ETH still in the contract. No
+  on-chain link to the fleet / game operator / coToken.
 - Separate 2026 drainer 0xA707034429c8E4E01df056C0CbCf478F0FBeFAd7 ("Fake_Phishing2831105"):
   577 victims / 326.8 ETH -> THORChain -> BTC+XMR, Apr 29 - May 7 2026. Shares exactly 11
   victims (16 LastWinner players) with our operation; its other 561 victims are unrelated
@@ -127,10 +126,10 @@ OPEN QUESTIONS (ranked) + HOW TO ATTACK EACH
    name any. The deployer 0xeae69cad is a throwaway with no links.
 
 4. SIZE THE PERMANENTLY-STUCK ETH. Of the 2,425 ETH still in the contract, how much is in
-   self-destructed BAPT-LW20 proxies (unrecoverable) vs live EOAs (recoverable iff a key
+   self-destructed 2018 contracts (unrecoverable) vs live EOAs (recoverable iff a key
    exists)? Method: for each address in data/unclaimed.json, Etherscan getcontractcreation
    (was it ever a contract) + eth_getCode (alive now). Sampling so far: ~700 of the top-900
-   unclaimed by value (~440 ETH) are self-destructed 2018 proxies. This scan was started and
+   unclaimed by value (~440 ETH) are self-destructed 2018 contracts. This scan was started and
    not finished (rate limits) — finish it.
 
 5. CHARACTERISE THE NON-LASTWINNER ~15%. ~6,500 drained wallets never called the contract.
@@ -191,7 +190,7 @@ D. "2,907 ETH parked, nothing cashed out." TRUE ONLY AS OF EARLY SEP 2026. It's 
    Re-check 0xe4a219fbed / 0x8d7c20e3 / 0x5723168b / 0x220ecbb6 before relying on it - a
    later bridge/mixer/exchange move flips the consolidation-vs-theft read.
 
-E. "BAPT-LW20 dead proxies are a large share of the stuck 2,425 ETH." SAMPLE-BASED (29/30 of
+E. "Dead 2018 contracts are a large share of the stuck 2,425 ETH." SAMPLE-BASED (29/30 of
    the top-900 nonce-0 unclaimed = self-destructed). The full scan of data/unclaimed.json was
    NOT finished. The exact permanently-stuck amount is an estimate.
 
@@ -211,8 +210,8 @@ I. "The game deployer 0xeae69cad tells us nothing." It's minimal (23 tx) but its
    counterparties (0xccd8c1134b, 0xf8a80292ac, 0x531a4e109807, ...) were not traced - one could
    be an operator wallet.
 
-J. 2018 identity claims ("Ant Swarm pyramid", "~200k ETH bot funding", "5,194 ETH airdrop
-   theft") are from SECBIT / BlockBeats / Zhongqiang Chen - NOT independently re-verified here.
+J. 2018 identity claims ("Ant Swarm pyramid", "~200k ETH bot funding") are from SECBIT / BlockBeats - NOT
+   independently re-verified here.
 
 K. "Consolidation vs theft ~50/50" is a JUDGEMENT, not a measurement. Weighting "public hack
    framing + phishing label" against "parks-don't-dump + organised roster" is subjective;

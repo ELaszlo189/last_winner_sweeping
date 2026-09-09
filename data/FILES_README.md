@@ -49,8 +49,8 @@ block-range scan; converged through ~mid-Sep 2018 — not 100% of the contract's
 
 ## `unclaimed.json` — 48,451 `[address, ETH]` pairs
 The vault holders who have NOT called `withdraw()` — i.e. the **2,425 ETH still inside the
-contract**. Largely (a) BAPT-LW20 self-destructed proxy contracts, vaults permanently stuck,
-and (b) genuinely abandoned real players. Sizing (a) vs (b) exactly is an open task (see `llm.txt`).
+contract**. Largely (a) 2018 contracts that self-destructed the day they were made (vaults permanently
+stuck - no code, no key), and (b) long-abandoned wallets. Sizing (a) vs (b) exactly is an open task (see `llm.txt`).
 
 ## `trackA_senders.json` — `{a279: [...], 8d7c: [...]}`
 The 27,230 / 30,364 addresses that swept loose ETH to the July / Aug-24 collectors.

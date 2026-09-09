@@ -24,18 +24,16 @@ the biggest FoMo3D clone of 2018, whose 8‑years‑dormant wallet fleet started
   wallets and **mostly parked** — 2,907 ETH unmoved in `0xe4a219fbed` since 28 Jul.
 - A **separate** operator (`0xA707…`, the publicly‑reported April‑30 "dormant wallet drain")
   swept **~11–16** of the same wallets days earlier; its other 561 victims are unrelated (§4).
-- ~1,000 of the still‑unclaimed vaults belong to self‑destructed 2018 airdrop‑exploit
-  contracts and are **permanently stuck**.
+- The **2,425 ETH still in the contract** is largely unrecoverable — much of it sits in the
+  vaults of ~1,000 addresses that were contracts and self‑destructed back in 2018 (no key, no
+  code), the rest in long‑abandoned wallets.
 
 ### What we think
 - The ~44k wallets are **one 2018 LastWinner farming operation** (or mostly one), not
-  thousands of unrelated people — the coToken pool, the shared Aug/Nov‑2018 creation windows,
-  and the uniform 2026 sweep all point that way.
+  thousands of unrelated people — see *"Why the ~44k wallets are treated as one set"* below.
 - The 2026 sweep is **slightly more likely a consolidation** by whoever rightfully holds the
   keys than a theft: it's methodical, it calls `withdraw()` even on empty wallets (roster
   behaviour), and it **parks** rather than dumps.
-- The keys were probably exposed by **weak 2018 key generation** (the LastWinner app / farming
-  tooling), not a single targeted breach.
 
 ### What it could be instead
 - A **mix** — one farm + independent farmers + retail — that only shares "played LastWinner +
@@ -66,11 +64,6 @@ list of things that could be wrong: [`llm.txt`](./llm.txt).*
   *substance* (a large 2018 farming set manufacturing volume) checks out; the *figure* is a
   soft contemporaneous estimate, and **no single "bankroll" entity is identified** — the six
   wallets that funded most of the fleet are HTX/Huobi and BW.com exchange hot wallets.
-- **Airdrop exploit:** a *separate* attacker ("BAPT‑LW20", paymaster
-  `0x9c1065e4a2fe67715ce82772cfc223bd76009451`) exploited FoMo3D's predictable‑randomness
-  `airdrop()` with ~1,000 throwaway contracts and took ~5,194 ETH. Those contracts
-  self‑destructed — their leftover in‑game vaults are **permanently stuck** and make up a
-  large share of the ETH still in the contract today.
 
 ## 2. What happened in 2026
 
@@ -98,7 +91,6 @@ wallets (phases 2 + 3). Full infrastructure list in [`data/infra_addresses.csv`]
 | 1 | Game operator `0xeae69cad` + "Ant Swarm" promoters | built + promoted the game | **none** (deployer is a throwaway, 23 tx) |
 | 2 | The **fleet** (~44k wallets) | farmed the game from launch; ~⅔ first funded by **Huobi/HTX** withdrawals (5 hot wallets) + **BW.com** (1) | — |
 | 3 | **"coToken" pool** `0x03cb0021808442ad5efb61197966aef72a1def96` | a small ETH deposit/withdraw **pooling contract** (~187 ETH, 552 depositors, active only **Nov 2018**); a co‑investment / pooled‑betting vehicle used by **~44%** of the fleet | deployer funded from OKX; **no link** to the game operator |
-| 4 | **BAPT‑LW20** (paymaster `0x9c1065e4a2`) | 2018 airdrop‑randomness exploiter; ~1,000 self‑destructed proxies (their stuck vaults are much of the 2,425 ETH still in the contract) | **none** |
 
 The **2026 drainer** holds keys to ~44k wallets and works them as an organised roster (it even
 calls `withdraw()` on ~8,900 empty ones). Whether that reflects one 2018 farm or a mass key
@@ -109,6 +101,32 @@ compromise of many participants is the core open question.
 the dominant 2018 Chinese exchange — it does **not** identify a private bankroll. A mass
 0.0025‑ETH sweep from those wallets on 2026‑03‑14 is exchange hot‑wallet consolidation, not
 anything to do with this operation.
+
+## Why the ~44k wallets are treated as one set
+
+Not proof — a best inference. The signals, strongest first:
+
+1. **Purpose‑built.** Almost every wallet was **funded and first used on the same day**, and
+   its first action was playing LastWinner or depositing to the coToken pool. These are not
+   pre‑existing personal wallets; they were created to farm the game.
+2. **Two tight creation windows** — ~63% first appear in LastWinner's opening ~5 days
+   (Aug 2018), ~22% in a second wave in **Nov 2018**. Not spread across years.
+3. **A shared private pooling contract.** ~44% of the wallets deposited to **coToken**
+   (`0x03cb0021`), which existed for **only 25 days** in Nov 2018 and had 552 depositors.
+   Unrelated gamblers don't share a bespoke pool.
+4. **One shared funding route** — ~⅔ seeded from the same six Huobi/HTX + BW.com hot wallets.
+   Weak on its own (Huobi ≈ everyone in 2018 China), but it lines up with 1–3.
+5. **One keyholder in 2026.** The sweep drips a uniform ~0.003 ETH of gas, does
+   gas → `withdraw()` → sweep in the same minute, funnels to a small rotating set of
+   collectors, and calls `withdraw()` on ~8,900 **empty** wallets — i.e. it is iterating a
+   fixed list, not reacting to balances. Whatever the wallets were in 2018, they are **one
+   controlled set now**.
+6. **LastWinner‑specific.** ~85% provably touched the LastWinner contract; 0% of a sampled
+   subset ever touched the original FoMo3D.
+
+**Against:** the funding route is a weak signal, ~56% are *not* in the coToken pool, and 2018
+behaviour is heterogeneous (5–50 tx, varied gas). So it could instead be a farm **plus**
+independent farmers **plus** retail that merely share "played LastWinner + got swept in 2026".
 
 ## 4. The separate April‑2026 drainer (`0xA707…`)
 
@@ -123,8 +141,8 @@ different pools of ETH**. Detail: `a707_link_analysis.md`, `a707_link_shared_add
 
 ## 5. Current status (as of early Sep 2026)
 
-- LastWinner contract: **2,425.63 ETH** — mostly BAPT‑LW20 dead‑proxy vaults (unrecoverable by
-  anyone) + genuinely abandoned real players.
+- LastWinner contract: **2,425.63 ETH** — mostly the vaults of ~1,000 addresses that were
+  contracts and self‑destructed in 2018 (unrecoverable — no key, no code) + long‑abandoned wallets.
 - `0xe4a219fbed…`: **2,907 ETH**, unmoved 40+ days.
 - Other collectors: ~180 ETH, mostly idle.
 - Only ~325 ETH is known to have actually left through a bridge (the `0xA707` actor, not ours).
