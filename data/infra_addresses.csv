@@ -30,4 +30,4 @@ address,role,phase,notes
 0x260d1c4724d15ae5c882d365886fb8cae70a746c,2018 fleet wallet,bootstrap,seeded Aug-24 collector 0x8d7c20e3; itself track-A; first tx 2018-08-08
 0x86c6391dccf7c73b2119c0fa2630f1fdb5819741,2018 fleet wallet,bootstrap,seeded burst-2 collector 0x5723168b; first tx 2018-08-07
 0xa707034429c8e4e01df056c0cbcf478f0fbefad7,SEPARATE drainer (public 'Fake_Phishing2831105'),2026-04-29..05-07,"577 wallets / 326.8 ETH -> THORChain -> BTC/XMR. Only 11 shared victims, ZERO shared infra. Different operator, overlapping compromised keys."
-0xa271266ea7cf6863e518edc7bb2607349cde2cf1,funder of sequential-pID 2026 rebind wallets,2026-08,funded 0x0d4a2d5a etc. (pIDs 89135+) that hold un-withdrawn 2018 gen vaults
+0xa271266ea7cf6863e518edc7bb2607349cde2cf1,NOT OURS - address-poisoning spammer (re-classified 2026-09-09),2026-08,"6000 txs / 5995 exactly 0-value / 1 non-zero ever. Dust-poisons LW token-balance holders incl. dead 2018 BAPT contracts (0x0d4a2d5a = self-destructed contract, not a rebind wallet). No pID repointing. See summary.json TASK1.REVISION_2026-09-09"

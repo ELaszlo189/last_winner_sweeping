@@ -125,12 +125,19 @@ OPEN QUESTIONS (ranked) + HOW TO ATTACK EACH
    recipient is more informative); check the Ant Swarm promoter wallets if 2018 Chinese sources
    name any. The deployer 0xeae69cad is a throwaway with no links.
 
-4. SIZE THE PERMANENTLY-STUCK ETH. Of the 2,425 ETH still in the contract, how much is in
-   self-destructed 2018 contracts (unrecoverable) vs live EOAs (recoverable iff a key
-   exists)? Method: for each address in data/unclaimed.json, Etherscan getcontractcreation
-   (was it ever a contract) + eth_getCode (alive now). Sampling so far: ~700 of the top-900
-   unclaimed by value (~440 ETH) are self-destructed 2018 contracts. This scan was started and
-   not finished (rate limits) — finish it.
+4. SIZE THE PERMANENTLY-STUCK ETH. -- RESOLVED 2026-09-09. Full scan done: 42,820 / 47,183
+   non-drained-unclaimed addresses (99.98% of the 2,424.9 ETH). Result:
+     dead_contract  35,791 addrs / 1,842.8 ETH (76%)  -- self-destructed 2018 contracts, stuck for everyone
+     eoa_house           1 / 163.4  -- pID-1 aff (0xf3cb6f36)
+     eoa_cluster     2,214 / 247.7  (+~2,600 in unscanned tail => ~4,800 / ~270 ETH)
+                                    -- dormant 2018 farming-fleet EOAs; NONE ever touched by the 2026 drain infra
+     eoa_other       ~2,000 / ~147  -- LW players funded outside the 6 bankrolls
+   The 2026 operator drained 100% of the 18,216 addresses it gas-touched. New open lead: does
+   anyone hold the eoa_cluster keys (the operator's ~10-12% coverage gap)? See
+   data/unclaimed_classified.csv, data/dead_contract_creators.csv, data/unclaimed_classified_README.md,
+   summary.json TASK1.REVISION_2026-09-09_full_scan.
+   NB: 0xa271266e ("sequential-pID batch funder" in infra_addresses.csv) is a plain
+   address-poisoning spammer, NOT part of the drain and NOT doing pID rebinds.
 
 5. CHARACTERISE THE NON-LASTWINNER ~15%. ~6,500 drained wallets never called the contract.
    Are they proxy-mediated players (their contract played), pure reserve wallets, or used for

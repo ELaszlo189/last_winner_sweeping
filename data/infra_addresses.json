@@ -187,8 +187,8 @@
  },
  {
   "address": "0xa271266ea7cf6863e518edc7bb2607349cde2cf1",
-  "role": "funder of sequential-pID 2026 rebind wallets",
+  "role": "NOT OURS - address-poisoning spammer (re-classified 2026-09-09)",
   "phase": "2026-08",
-  "notes": "funded 0x0d4a2d5a etc. (pIDs 89135+) that hold un-withdrawn 2018 gen vaults"
+  "notes": "6000 txs / 5995 exactly 0-value / 1 non-zero ever. Dust-poisons LW token-balance holders incl. dead 2018 BAPT contracts (0x0d4a2d5a = self-destructed contract, not a rebind wallet). No pID repointing observed. See summary.json TASK1.REVISION_2026-09-09_full_scan.rebind_theory_killed"
  }
 ]

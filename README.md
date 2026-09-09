@@ -141,8 +141,12 @@ different pools of ETH**. Detail: `a707_link_analysis.md`, `a707_link_shared_add
 
 ## 5. Current status (as of early Sep 2026)
 
-- LastWinner contract: **2,425.63 ETH** — mostly the vaults of ~1,000 addresses that were
-  contracts and self‑destructed in 2018 (unrecoverable — no key, no code) + long‑abandoned wallets.
+- LastWinner contract: **2,425.63 ETH**. Full scan (2026‑09‑09, `data/unclaimed_classified.csv`):
+  **1,842.8 ETH (76%) in 35,791 self‑destructed 2018 contracts** (unrecoverable — no key, no
+  code; a batch airdrop‑farming fleet, 120 deployer wallets), **163.4 ETH** the game's own
+  pID‑1 house/`aff` wallet, **~270 ETH** in dormant farming‑fleet EOAs the 2026 operator never
+  touched (its key trove covers ~88–90% of the fleet, not all), **~147 ETH** other abandoned
+  players. The operator drained 100% of the 18,216 addresses it did gas‑touch.
 - `0xe4a219fbed…`: **2,907 ETH**, unmoved 40+ days.
 - Other collectors: ~180 ETH, mostly idle.
 - Only ~325 ETH is known to have actually left through a bridge (the `0xA707` actor, not ours).
@@ -165,6 +169,8 @@ different pools of ETH**. Detail: `a707_link_analysis.md`, `a707_link_shared_add
 | `data/a707_link_analysis.md` | the "separate actor" write‑up |
 | `data/relatedness_sample.csv` | 180‑address funder sample behind the "one fleet" claim |
 | `data/unclaimed.json` | 48,451 not‑yet‑claimed vault holders (= the 2,425 ETH still in the contract) |
+| `data/unclaimed_classified.csv` | **47,183** of those, classified: dead self‑destructed contract vs live EOA, funder fingerprint, whether the 2026 drain infra ever touched it. 99.98% of the ETH scanned. See `data/unclaimed_classified_README.md`. |
+| `data/dead_contract_creators.csv` | the **120** deployer wallets behind the 35,791 self‑destructed contracts (1,843 ETH stuck), ranked — where to manually verify on Etherscan |
 | `data/camp_norm.json.gz`, `data/camp_intl.json.gz` | raw 2026 contract tx / payout dumps (reproducibility anchor) |
 | `scripts/` | curated scripts that reproduce the headline results |
 | `scratch/` | every other ad‑hoc script used during the investigation — messy, but shows exactly how each finding was derived |

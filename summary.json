@@ -104,7 +104,6 @@
         "==current_contract_balance": true
       }
     },
-    "answer": "MOSTLY NO. (1) The fleet's live vaults with value are essentially done: of ~33,374 confirmed fleet members (track-A sweepers), 14,688 already called withdraw(); only 1,268 have a pending vault, totalling 0.04 ETH of dust. (2) A LARGE PART OF THE REMAINING 2,425 ETH IS PERMANENTLY STUCK: spot-check of the top-900 unclaimed by value (29/30) shows they are 2018 CONTRACTS that self-destructed within seconds of each other on 2018-08-16/17 - no code, no key, so ~427 ETH across that sample can never be withdrawn by anyone. (A nonce-0-at-2025 read of these is an artifact: a self-destructed contract has nonce 0 and no later txs.) The remaining ~193 addrs / ~291 ETH of the top-900 are pre-2021-active EOAs = genuinely abandoned players. So the unclaimed 2,425 ETH = permanently-stranded dead-contract vaults + genuinely abandoned wallets, NOT the operator staging anything. No pID-repointing is happening; the drain calls withdraw() straight from the live 2018 EOAs.",
     "unclaimed_by_size": {
       ">=1 ETH": {
         "addrs": 99,
@@ -123,7 +122,10 @@
         "eth": 70.9
       }
     },
-    "top_unclaimed_nonce_era_top900": {
+    "stuck_vs_abandoned_vs_operator": "SUPERSEDED by REVISION_2026-09-09_full_scan. (kept) Largest single unclaimed vault 0xf3cb6f36... = 163.42 ETH, pID 1, pure 'aff'. Full scan result: 1,842.8 ETH self-destructed contracts (35,791 addrs), 163.4 house, ~270 dormant fleet EOAs (never infra-touched), ~147 other players.",
+    "repointing_mechanism": "In the FoMo3D/PlayerBook design LW forks: the pID<->address link is set on first interaction (determinePID: plyr_[pID].addr = msg.sender). To bind a NEW address to an EXISTING pID you use PlayerBook addMeToGame / addMeToAllGames / registerNameX*, ALL of which require pIDxAddr_[msg.sender] != 0 - i.e. you must already control an address on that pID. NO admin override, NO permissionless 'claim this pID'. => repointing is PERMISSIONED (only the pID owner / holder of their key). It CAN be used defensively (a worried owner with their 2018 key binds a fresh secure address and withdraws from it first) but still needs the old key and is a race. Not observed happening in this operation - the drain just calls withdraw() straight from the compromised 2018 EOAs; dead-proxy vaults have no rescue path for anyone.",
+    "answer_ORIGINAL_2026-09-07_spot_check": "MOSTLY NO. (1) The fleet's live vaults with value are essentially done: of ~33,374 confirmed fleet members (track-A sweepers), 14,688 already called withdraw(); only 1,268 have a pending vault, totalling 0.04 ETH of dust. (2) A LARGE PART OF THE REMAINING 2,425 ETH IS PERMANENTLY STUCK: spot-check of the top-900 unclaimed by value (29/30) shows they are 2018 CONTRACTS that self-destructed within seconds of each other on 2018-08-16/17 - no code, no key, so ~427 ETH across that sample can never be withdrawn by anyone. (A nonce-0-at-2025 read of these is an artifact: a self-destructed contract has nonce 0 and no later txs.) The remaining ~193 addrs / ~291 ETH of the top-900 are pre-2021-active EOAs = genuinely abandoned players. So the unclaimed 2,425 ETH = permanently-stranded dead-contract vaults + genuinely abandoned wallets, NOT the operator staging anything. No pID-repointing is happening; the drain calls withdraw() straight from the live 2018 EOAs.",
+    "top_unclaimed_nonce_era_top900_ORIGINAL_SAMPLE": {
       "created_2025_26_staged": {
         "addrs": 707,
         "eth": 440.9,
@@ -135,8 +137,13 @@
         "pct": 39.4
       }
     },
-    "stuck_vs_abandoned_vs_operator": "Largest single unclaimed vault = 0xf3cb6f36fc55fca478da79a9d7c841463108dfda, 163.42 ETH, pID 1, pure 'aff' (house/first-referrer commission) - this one is a real 2018 EOA still active 2026-09-07, not a dead proxy; not withdrawn. The 'sequential pIDs 89135-89157' cluster = 2018 contracts that self-destructed (dead, vaults stuck). So of the 2,425 ETH: a large slice (>=~430 ETH just in the top-900, more in the tail) is PERMANENTLY STUCK in self-destructed 2018 contracts; the rest is genuinely abandoned player EOAs.",
-    "repointing_mechanism": "In the FoMo3D/PlayerBook design LW forks: the pID<->address link is set on first interaction (determinePID: plyr_[pID].addr = msg.sender). To bind a NEW address to an EXISTING pID you use PlayerBook addMeToGame / addMeToAllGames / registerNameX*, ALL of which require pIDxAddr_[msg.sender] != 0 - i.e. you must already control an address on that pID. NO admin override, NO permissionless 'claim this pID'. => repointing is PERMISSIONED (only the pID owner / holder of their key). It CAN be used defensively (a worried owner with their 2018 key binds a fresh secure address and withdraws from it first) but still needs the old key and is a race. Not observed happening in this operation - the drain just calls withdraw() straight from the compromised 2018 EOAs; dead-proxy vaults have no rescue path for anyone."
+    "REVISION_2026-09-09_full_scan": {
+      "what_changed": "Ran the full address-level scan the ORIGINAL answer was a 30-address spot-check of. Scanned 42,820 / 47,183 non-drained-unclaimed addresses = 99.98% of the 2,424.9 ETH (rest is sub-0.0006 ETH dust). Method: eth_getCode + getcontractcreation for dead-contract vs EOA; first-funder fingerprint for the top-20k EOAs; cross-checked every address against the 28 drain-infra wallets. Files: data/unclaimed_classified.csv, data/dead_contract_creators.csv, data/unclaimed_classified_README.md.",
+      "answer": "CONFIRMED MOSTLY-NO, now quantified, with one correction. (1) ENTITY-CONTROLLED wallets: done. The drain infra gas-touched 18,216 distinct addresses and drained 100% of them - only 2 infra-touched addresses retain a vault (0.0001 ETH). Of ~25,300 withdraw() callers only 1,268 have a pending vault (0.04 ETH dust). (2) The unclaimed 2,424.9 ETH breaks down: dead_contract 35,791 addrs / 1,842.8 ETH (76%); eoa_house (pID 1 aff) 1 / 163.4 (7%); eoa_cluster - dormant 2018 farming-fleet EOAs - 2,214 confirmed / 247.7 ETH, ~+2,600 more in the unscanned tail => ~4,800 / ~270 ETH (11%); eoa_other (LW players, non-bankroll funders) ~2,000 / ~147 ETH (6%). (3) CORRECTION to the ORIGINAL: the ~270 ETH eoa_cluster slice is NOT 'genuinely abandoned players' - it is the same manufactured fleet as the drained set (six-bankroll funder, first-seen Aug-2018, first tx = play LastWinner, dormant since 2018-19, 100% called LW). But NONE of these 2,214 were ever touched by the 2026 drain infra, and the operator drained everything it did touch => its key trove covers ~88-90% of the fleet, not 100%. So: 'same cluster by origin, NOT the same entity's active key set.' Independent cross-check: 4 of the 6 bankrolls each have ~10-12% of their 2018 recipients sitting unclaimed-and-never-infra-touched (>=4,985 wallets / >=224 ETH, a floor).",
+      "dead_contract_operation": "The 1,843 ETH of dead contracts = 120 deployer wallets; top 6 (0x73b61a56, 0xae587866, 0x16e21b70, 0x820d115b, 0x5167350d, 0x7f2f933e) made ~22,400 of 35,791 leaf contracts / ~1,183 ETH. Created 2018-08-07 onward via per-batch factory contracts, self-destructed same-era. = the BAPT-LW20 airdrop-farming group (scratch/app_history_findings.md 2b) + the operator's own wash-trading bots. Permanently unwithdrawable by anyone.",
+      "rebind_theory_killed": "0xa271266e (flagged in infra_addresses.csv as 'funder of sequential-pID 2026 rebind wallets') is a PLAIN ADDRESS-POISONING SPAMMER: 6,000 txs, 5,995 of them exactly 0-value, 1 non-zero in its life. Its 'targets' (e.g. 0x0d4a2d5a, 5.57 ETH #2 unclaimed) are dead 2018 BAPT contracts being dust-poisoned. No pID-repointing / rebind attack is occurring. The repointing_mechanism note below (permissioned, needs the old key, not observed) stands; that infra_addresses.csv line is an over-read - see key_addresses.aug2026_sequential_pID_batch_funder.",
+      "recoverable_in_principle": "Of the 2,425 ETH, at most ~580 ETH sits in live EOAs (house 163 + cluster ~270 + other ~147); ~1,843 ETH is in self-destructed contracts and is unreachable by any key."
+    }
   },
   "TASK_july_entity_vs_aug_sep_entity": {
     "question": "Given the different timeframes (July loose-ETH wave vs Aug-Sep withdraw() wave), are they the same actor?",
@@ -236,14 +243,15 @@
     ],
     "2018_coToken_pool": "0x03cb0021808442ad5efb61197966aef72a1def96",
     "top_unclaimed_vault_163eth_aff": "0xf3cb6f36fc55fca478da79a9d7c841463108dfda",
-    "aug2026_sequential_pID_batch_funder": "0xa271266ea7cf6863e518edc7bb2607349cde2cf1",
+    "aug2026_sequential_pID_batch_funder": "0xa271266ea7cf6863e518edc7bb2607349cde2cf1 - RE-CLASSIFIED 2026-09-09: a plain address-poisoning spammer (6,000 txs, 5,995 zero-value, 1 non-zero ever), NOT part of the LastWinner drain and NOT doing any pID rebind. Its dust targets include dead 2018 BAPT contracts. See TASK1.REVISION_2026-09-09_full_scan.rebind_theory_killed.",
     "public_report_phishing_label": "Fake_Phishing2831105 (Etherscan)"
   },
   "open_leads": [
-    "Quantify how much of the 2,425 ETH is permanently stuck in self-destructed 2018 contracts vs recoverable-in-principle by a live key (scan all 48,451 unclaimed for code-ever / selfdestruct).",
+    "RESOLVED 2026-09-09 (open_leads[0]): full scan of the 47,183 non-drained-unclaimed addresses. 1,842.8 ETH (76%) is in 35,791 self-destructed 2018 contracts = permanently stuck; ~270 ETH is dormant farming-fleet EOAs the 2026 operator never touched (~10-12% key-coverage gap); 163.4 ETH house wallet; ~147 ETH other abandoned players. See data/unclaimed_classified.csv + data/dead_contract_creators.csv + data/unclaimed_classified_README.md.",
     "Match burst-1 collector 0x8f55b448 (or its downstream) to the publicly-reported 'Fake_Phishing2831105' address and the 324.741 ETH THORChain transfer, to confirm our LastWinner drain == the reported 30 Apr dormant-wallet hack.",
     "Whether the 163.42 ETH aff vault (pID 1) is the LW operator's own referrer wallet, and whether it ever gets withdrawn.",
     "Watch 0xe4a219fbed (2,907 ETH) - if/when it moves and where (bridge? exchange? re-stake?) resolves the theft-vs-hold question.",
-    "How LastWinner's 2018 mobile app generated/stored keys - the app binary or its backend would confirm or kill the 'weak key generation' vector."
+    "How LastWinner's 2018 mobile app generated/stored keys - the app binary or its backend would confirm or kill the 'weak key generation' vector.",
+    "The ~4,800 eoa_cluster unclaimed wallets (~270 ETH): does ANYONE hold their keys? They are the 2026 operator's ~10-12% coverage gap. Watch for any of them calling withdraw(), or for a second sweeper (cf. 0xA707) picking them up. Funder pass on the 3,688 eoa_unscanned tail rows would firm up the count."
   ]
 }

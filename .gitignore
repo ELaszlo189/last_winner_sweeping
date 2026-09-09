@@ -12,6 +12,13 @@ __pycache__/
 *_ckpt*.json
 uf*_ckpt.json
 lw_senders_ckpt*.json
+# unclaimed_scan_*.py checkpoints (regenerable from data/ — see unclaimed_scan_00_prep.py)
+scratch/nd_unclaimed_sorted.json
+scratch/creation_map.json
+scratch/funder_map.json
+scratch/infra_touched.json
+scratch/eoa_top20k.json
+scratch/cluster_unclaimed_untouched.json
 
 # local scratch dumps not meant for the repo
 balances.json

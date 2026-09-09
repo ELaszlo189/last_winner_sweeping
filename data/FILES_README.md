@@ -50,7 +50,27 @@ block-range scan; converged through ~mid-Sep 2018 — not 100% of the contract's
 ## `unclaimed.json` — 48,451 `[address, ETH]` pairs
 The vault holders who have NOT called `withdraw()` — i.e. the **2,425 ETH still inside the
 contract**. Largely (a) 2018 contracts that self-destructed the day they were made (vaults permanently
-stuck - no code, no key), and (b) long-abandoned wallets. Sizing (a) vs (b) exactly is an open task (see `llm.txt`).
+stuck - no code, no key), and (b) long-abandoned wallets. **Sized exactly in `unclaimed_classified.csv`
+(2026-09-09).**
+
+## `unclaimed_classified.csv` — 47,183 rows  *(added 2026-09-09)*
+Full address-level scan of the non-drained unclaimed set (the 48,451 minus the 1,268 that are
+in `drained_eoas.csv`). 42,820 scanned = 99.98% of the 2,424.9 ETH. Columns: `address`,
+`unclaimed_eth`, `cls`, `contract_creator`/`contract_factory`/`contract_created` (for
+`dead_contract`), `first_seen`/`last_seen`/`n_tx`/`called_lastwinner`/`first_tx_to_LW`/
+`first_funder`/`cluster_funder` (for EOAs, top-20k), `touched_by_2026_drain_infra`.
+`cls`: `dead_contract` 35,791 / **1,842.8 ETH** (self-destructed 2018 contracts — stuck for
+everyone) · `eoa_house` 1 / 163.4 (pID-1 `aff`) · `eoa_cluster` 2,214 / 247.7 (dormant
+farming-fleet EOAs — same fleet as the drained set, **0 ever infra-touched**) · `eoa_other`
+941 / 138.3 · `eoa_unscanned` 3,688 / 31.2 (EOA, funder not pulled) · `lookup_failed` 185 ·
+`scan_pending` 4,363 / 0.4 (dust). Full write-up + how-to-verify: `unclaimed_classified_README.md`.
+
+## `dead_contract_creators.csv` — 120 rows  *(added 2026-09-09)*
+The deployer wallets behind the `dead_contract` rows, ranked by `eth_stuck`. `creator`,
+`n_dead_contracts_unclaimed`, `eth_stuck`, `first_created`, `last_created`. Top 6
+(`0x73b61a56`, `0xae587866`, `0x16e21b70`, `0x820d115b`, `0x5167350d`, `0x7f2f933e`) = ~22,400
+leaf contracts / ~1,183 ETH. = BAPT-LW20 airdrop-farming fleet + operator wash-trading bots.
+Manual check: open a creator on Etherscan → "Contract Creations" (`#internaltx`).
 
 ## `trackA_senders.json` — `{a279: [...], 8d7c: [...]}`
 The 27,230 / 30,364 addresses that swept loose ETH to the July / Aug-24 collectors.
