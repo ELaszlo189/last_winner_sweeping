@@ -211,6 +211,231 @@ device, with what entropy source, and whether they were also held server-side.
 
 ---
 
+## 6b. The "LastWinner copied FoMo3D's weak wallet keygen" hypothesis — assessed 2026-09-09
+
+**Prompt:** SECBIT showed FoMo3D-era players' Trust-Wallet keys had weak entropy;
+LastWinner copied FoMo3D's contract verbatim, so maybe it also copied the wallet
+generation and inherited the flaw.
+
+**The chain has a broken link, and a sharper version.**
+
+- **FoMo3D shipped NO wallet.** It was a browser dApp. Per SECBIT's own 2024
+  write-up, the weak keys belonged to *Trust Wallet's* 2018 **iOS** build, and
+  FoMo3D enters the story only because many of those Trust-Wallet users
+  *happened to play FoMo3D* ("119 wallets created on July 21, 2018 … most … were
+  involved in the famous Fomo3D game"). So "LastWinner copied FoMo3D's wallet
+  keygen" cannot be literally true — there was nothing to copy. Copying the
+  *Solidity* tells us nothing about the *app*.
+- **The real question** is LastWinner's OWN app. Primary source confirms it had
+  one: the archived 2018-08-12 guide (`web.archive.org/web/20180812093336id_/
+  http://lastwinner.me:80/en/guide.html`) says *"LW built-in Ethereum wallet …
+  solves the problem that most users can't install browser wallet plug-in"*,
+  *"The way to create a new account will generate an Ethereum wallet for the
+  player"*, *"Players can import wallets using mnemonics and private Seeds"*,
+  and *"you need to set a wallet PIN for payment verification. LW does not store
+  user PIN code"*. => an on-device BIP39 generator — exactly the surface where a
+  low-entropy RNG bites. Whether the PIN is folded into the BIP39 seed as a
+  passphrase (which would defeat timestamp regeneration) is unclear; the guide
+  frames it as payment/signing auth, which suggests it is NOT a seed passphrase.
+- **Timeline (revised 2026-09-09 — an earlier draft was too glib with "fixed
+  before launch").** Dependency pins mean an upstream fix does NOT reach an app
+  until its team runs `pod update` and ships a new build. SECBIT's fix chain:
+  `trezor-crypto-ios` 0.0.7 **2018-07-16** → `trust-core` 0.1.2 **2018-08-08** →
+  `trust-keystore` 0.4.3 **2018-08-08** → `trust-wallet-ios` **2018-08-21**.
+  LastWinner launched **2018-08-06**, so an app frozen at launch was built
+  against the still-vulnerable `trust-core`/`trust-keystore` (or an older pinned
+  `TrezorCrypto` pod, or a hand-copied `srand(time())` snippet — the bug *class*
+  was a widespread 2018 copy-paste, not unique to trezor). Trust Wallet's libs
+  were THE reference for "embed a wallet in your dApp" in 2018; a fast Chinese
+  FoMo3D-clone team grabbing them mid-2018 is very plausible.
+- **The app was v1.0.0 and shows no sign of ever being updated.** Wayback CDX for
+  `lastwinner.me` (full history, via the Wayback CDX API): only one
+  APK filename ever (`lastwinner_1.0.0.apk`); `download.html` / `guide.html`
+  return **404 by 2018-10-12** — the site was gutted ~2 months after launch. No
+  forced-update path, no server-side patch. => whatever v1.0.0 shipped is what
+  minted **every** fleet wallet, in BOTH the Aug-2018 and Nov-2018 waves. That
+  is exactly why the 2026 drainer can hold the complete fleet as one roster: one
+  never-patched build, one keyspace.
+
+**On-chain circumstantial evidence (moderate; not proof):**
+
+1. **The fleet's key-generation window is narrow and known.** 200-wallet sample
+   of confirmed players: 96% first used their key **2018-08-06 … 08-14** (peak
+   Aug 7-9), plus the Nov-2018 second wave (~1 month). Wallet creation precedes
+   first use by minutes-to-days, so the whole keyset was minted inside roughly
+   **~2 weeks (Aug) + ~1 month (Nov) 2018 ≈ 3.8 million one-second timestamps.**
+   A SECBIT-style regeneration (per candidate second: seed PRNG → 32-byte
+   entropy → BIP39 → PBKDF2-2048 → derive `m/44'/60'/0'/0/0` → keccak → set-
+   membership) over that window is **minutes of compute on one machine** and
+   recovers the ENTIRE fleet in a single pass — which is exactly the observed
+   2026 fact (one entity, complete ~44k roster, uniform drain). A leaked
+   keystore file also explains the completeness, so this doesn't decide it — but
+   weak-RNG is *reproducible by anyone*, which fits **multiple independent
+   drainers** (0xA707 + our entity, possibly more later); a keystore leak is
+   finite.
+2. **0xA707 independently drained 11-16 fleet wallets.** Their first-tx dates are
+   spread evenly across the Aug-2018 launch fortnight (3/day, Aug 6-10) + a
+   couple later — NOT a tight contiguous block, i.e. consistent with 0xA707
+   having covered the whole window (or a cross-app keyspace) rather than a lucky
+   narrow guess. 16 independent hits on 44k addresses out of 2^160 is not
+   coincidence: a real fraction of the fleet has keys in a regenerable class.
+   (Counter-reading, which the repo currently prefers: 0xA707 was publicly tied
+   by TRM to the 2022 **LastPass** breach — a credential-theft cause unrelated to
+   RNG — and the overlap is incidental.)
+3. **8-year dormancy** (0/40 sampled fleet wallets moved ETH in 2020-2025) rules
+   out *trivially* weak keys (small ints / brainwallets, continuously swept since
+   2016) but fits the "needs a dedicated regeneration campaign" profile of the
+   Trust-Wallet class precisely.
+4. **Plausible trigger timeline:** SECBIT published the Trust-Wallet timestamp
+   method **Jan 2024** → someone applies it to other 2018 FoMo3D-era apps through
+   2024-25 → LastWinner fleet drained 2025-26. Narrative, not evidence.
+
+### 6b.1 STRONG new evidence (2026-09-09): the on-chain account names leak the client-side creation millisecond
+
+A local script (not published) decoded the first LastWinner-contract call of 260
+random confirmed-player fleet wallets. Findings:
+
+- **The app auto-generates the account name and stamps `Date.now()` into it.**
+  99/99 `registerNameXID` names in the sample match **exactly**
+  `^[A-Za-z]{15}\d{13}$` — 15 random mixed-case letters + a **13-digit Unix
+  millisecond timestamp**. Examples:
+  `cHbQxzxPPRtIhkX1533634629710`, `peLtodMEQSPZIKT1533568698892`,
+  `RJHCkfSMUpueZIw1533962392980`. No human types this; it is machine-generated
+  on "create account".
+- **That embedded ms timestamp is the wallet-creation moment.** Converted to UTC
+  it precedes the on-chain registration tx by a **median of 22 seconds** (65/99
+  within 60 s, 93/99 within 1 h; 1 marginally negative from clock skew). i.e. the
+  name is generated client-side the instant the account/keypair is created, then
+  the tx is signed and mined seconds later.
+- **Consequence:** for every fleet wallet that registered a name (~38% of the
+  sample — order ~13,000 wallets), the exact **millisecond** of wallet creation
+  is sitting in public calldata. A SECBIT-style key regeneration no longer has to
+  bound the creation time from funding — the name *hands you the seed candidate*
+  to ms precision. Search space per such wallet collapses from ~days to ~1000 ms.
+- **The 15-char `[A-Za-z]` prefix is a public sample of the app's client-side RNG
+  stream** at creation time — the same RNG that (on the weak-RNG hypothesis)
+  produced the mnemonic entropy. If it is `Math.random()`-class, the prefix
+  further constrains the PRNG state.
+- **This makes the generator JavaScript.** `Date.now()` (ms) + `[A-Za-z]{15}`
+  random strings are the JS idiom (`Math.random().toString(36)` /
+  `String.fromCharCode`) — so the app is RN / Cordova / webview, and the relevant
+  precedent is a **weak JS wallet RNG** (`Math.random()` / `Date`-seeded), a
+  known 2018 class, not only the trezor-crypto C bug.
+- Still NOT proven: that the mnemonic entropy came from the same weak call. But
+  the "we can't pin the timestamp" obstacle is now gone, and we have a public RNG
+  readout to test against.
+
+**Supporting details from the same 260-wallet pull:**
+- **95% of fleet wallets' first LastWinner tx is their nonce-0 tx** (first tx
+  ever) — the fleet is app-minted, not imported. 96% of first *outbound* txs go
+  straight to the LW contract.
+- First call: **160 `buyXid` / 99 `registerNameXID` / 1 `withdraw`**, 100% to the
+  main contract `0xDd9fd6b6…` (LastWinner folded PlayerBook into the main
+  contract). `registerNameXID` value is a flat **0.02 ETH** (matches the guide).
+- **`gas` limit = 800000 on 253/260 (97%)** — app-hardcoded, scripted, not
+  hand-set. `gasPrice` bimodal (10 gwei / 60 gwei) = ~two builds or pre/post the
+  Aug-2018 congestion.
+- **Referrer codes: 254 distinct / 259** — NOT one shared upline; a broad flat
+  pyramid, `affCode==0` never used (the app always injects a referrer, as the
+  guide requires). Low pIDs (12, 15, 37, 82, 313…) recur as referrers = early
+  seed accounts / top of pyramid.
+- **Funding NOT sponsored by a relayer:** 67% first-funded by the six HTX/BW hot
+  wallets, 86 distinct funders, no single non-exchange address fanning out to the
+  fleet. Users self-funded from an exchange; the app auto-registered a median
+  ~52 min later.
+
+(Scripts run locally, not published.)
+
+### 6b.1b App-created census — 1,600 drained vs 1,600 undrained LW players
+
+Classified each sampled address by its first LastWinner-contract call. (Alchemy
+free tier caps `eth_getLogs` at 10 blocks, so this is sample-based, not a full
+`onNewName` sweep. `onNewName` topic0 =
+`0xdd6176433ff5026bbce96b068584b7bbe3514227e72df9c630b749ae87e64442`; the player
+name is `bytes32 indexed` in topic3 — lowercased by the contract's NameFilter, so
+mixed case survives only in calldata.)
+
+- **The whole LastWinner playerbase is app-minted; the drained set is a slightly
+  *purer* cut of it.** On the shared signals drained ≈ undrained: **~40% vs ~38%**
+  of LW-callers carry the app's auto-generated `[a-z]{15}\d{13}` name; **`named_other`
+  (a human-chosen name) = 0 of 1,311 drained callers and 1 of 1,561 undrained** —
+  essentially nobody chose a name. The ~40% with a name just paid 0.02 ETH to
+  register the auto-name; the rest (`buy_first_no_name`) ran the same app and
+  skipped it (still nonce-0).
+- **But the imported-wallet tail differs ~6×.** Genuine pre-deployment / external
+  wallets (first-ever tx before LW's 2018-08-06 13:52 deploy, real 2018 play):
+  **12 / 1,311 drained callers (0.9%) vs 90 / 1,561 undrained (5.8%)**. Nonce-0
+  first-LW-tx among callers: **94.2% drained vs 87.9% undrained.** So the general
+  LW-player population has a real ~6% "played with my own MetaMask/imToken wallet"
+  tail — and the 2026 drainer **barely touched it**.
+- **Implication for the vector — a modest lean toward weak-RNG regeneration.** An
+  attacker who regenerated the *app's* keyspace can only reach app-created keys;
+  externally-created wallets are out of reach, so they're near-absent from the
+  drained set — which is what we see (0.9%). A keystore/backend leak could also
+  miss imported wallets (if import wasn't custodied), so this isn't proof, but
+  "the drain's reach ≈ exactly the app keyspace" is the regeneration signature.
+- **Blast radius:** if the RNG is weak, the at-risk population is the entire ~63k+
+  app userbase (`lastwinner_all_callers.json` + `balances.json`), not just the
+  drained 44k. The other ~19k were presumably left because they were empty.
+- **Window (feeds #5 / a regeneration):** app-pattern `Date.now()` values span
+  **2018-08-06 14:38:44 UTC** (46 min after LW deployed at 13:52) **→ mid-Nov
+  2018**, ~73% of the sample in the first 36 h; the sample is Aug-heavy only
+  because the caller list converged mid-Sep — the Nov hit confirms the same
+  never-updated app minted the Nov wave. **Genuine ms resolution: 1/756 values
+  end in `000`.** name `Date.now()` → registration tx: median 21 s (p90 ~17 min;
+  12/756 funded >1 day later). So for the ~40% with a name the creation instant
+  is public to the millisecond; for the rest, first-tx time bounds it to
+  seconds-minutes.
+- **~4% of drained wallets flag a "pre-LW" first tx** — but on inspection ~all are
+  artifacts: 2026 gas-drip forwards (class `withdraw_first`) or a single 2018
+  token contract (`0xade2fc8d` "FusChain"), plus Alchemy `getAssetTransfers`
+  metadata-timestamp skew (observed: one tx reported 09:37 vs true block time
+  18:40). No evidence of a genuine imported-wallet cohort in the drained set.
+
+(Scripts run locally, not published.)
+
+### 6b.2 The decisive test is still blocked on the artifact
+
+Still need `lastwinner_1.0.0.apk` (Android link on the 2018 `download.html`) or
+the iOS `.ipa`, to read the keygen and regenerate — now over the millisecond
+timestamps the account names hand us, not a blind window — matching against
+`data/drained_eoas.csv`.
+
+**Checked and exhausted (2026-09-09):**
+- OSS bucket `lastwinnerapp.oss-cn-shanghai.aliyuncs.com` → **`NoSuchBucket`**
+  (deleted); no Wayback captures of the bucket at all.
+- Wayback CDX for `lastwinner.me`: only 2018 HTML (`download.html`/`guide.html`,
+  retrieved from Wayback) + **2020 domain-parking pages** for
+  `lastwinner_1.0.0.apk` and `assets/lw.js` (19,649-byte ad HTML, not the files).
+- **Common Crawl** (CC-MAIN-2018-39/47): only `guide.html` / `error.html` /
+  `robots.txt` — no JS bundle, no APK. Same guide digest as Wayback.
+- `archive.org` full-text + `advancedsearch` for "lastwinner": **0 results**.
+- Web search for `lastwinner_1.0.0.apk` / `lastwinner.plist` / `com.lastwinner`
+  / the app name + apkpure/apkcombo/koodous/malwarebazaar: **no hits**.
+- SECBIT's 2018 writeup confirms the mobile client existed but neither links it
+  nor touches key generation (it's about the airdrop-RNG contract attack).
+- iOS enterprise cert display name **"most media servis, ooo"** ("ООО" = Russian
+  "LLC") — fits the 2018 wave of gambling apps abusing Apple enterprise certs
+  (TechCrunch Feb-2019); no sample surfaced by cert name.
+
+**Avenues that need resources outside this repo:**
+- **AndroZoo** — its nightly metadata CSV (~2.7 GB compressed) has package name +
+  market source for ~25M APKs; grep for `lastwinner`, get the SHA256, download via
+  API. Needs an API key (academic-email request). Best structured lead.
+- **VirusTotal Intelligence / Hybrid-Analysis / Intezer** — search
+  `content:"lastwinner.me"` or `content:"lastwinnerapp.oss-cn-shanghai"` +
+  `type:android`. Gambling apps are almost always uploaded. Needs an
+  enterprise/API account.
+- **Chinese app-store history & CN APK mirrors** (酷安/coolapk, 应用宝/sj.qq.com,
+  豌豆荚, 360, liqucn, apk.tw, 7723) via a CN-friendly connection / Baidu.
+- **Reach out to SECBIT / AnChain.AI / Zhongqiang Chen** — they reversed the LW
+  contract in 2018; SECBIT also did the Trust-Wallet-FoMo3D wallet work. Good
+  odds one kept the APK or its JS bundle.
+
+(Script run locally, not published. Archived pages retrieved from web.archive.org.)
+
+---
+
 ## 7. Sources
 
 - CoinDesk — *Unstoppable Scams? Ethereum's Gambling Problem Is Only Getting Worse* (LW, ~200k ETH bot ether): https://www.coindesk.com/markets/2018/08/17/unstoppable-scams-ethereums-gambling-problem-is-only-getting-worse

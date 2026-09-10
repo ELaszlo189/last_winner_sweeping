@@ -16,8 +16,6 @@ FACT (on-chain):
  - ~4,550 ETH moved; mostly PARKED as of early Sep 2026 (2,907 ETH unmoved in 0xe4a219fbed).
  - A SEPARATE operator (0xA707, publicly reported Apr-30) swept ~11-16 of the same wallets
    days earlier; its other 561 victims are unrelated.
- - ~1,000 still-unclaimed vaults belong to 2018 contracts that self-destructed (no code,
-   no key) - permanently stuck.
 WE THINK:
  - The ~44k wallets are one 2018 LastWinner farming operation (or mostly one).
  - The 2026 sweep is slightly more likely a consolidation by the rightful keyholder than a
@@ -49,8 +47,15 @@ HARD FACTS (on-chain; safe to build on)
 - Drained set: 44,014 unique EOAs (data/drained_eoas.csv).
     * 25,328 called withdraw() on LastWinner in 2026.
     * 33,374 had loose ETH swept to a collector (track A).
-    * 80.7% (35,527) confirmed ever interacted with LastWinner; ~15% never did but are the
-      same fleet by funder + creation window (the rest is scan-window incompleteness).
+    * 80.7% (35,527) confirmed ever interacted with LastWinner. The genuine non-participant
+      subset (touched_lastwinner=unknown AND looseETH-only = 7,654 addrs) almost never touched
+      the game contract (~1% in a 220-addr full-history sample, 0% touched FoMo3D) - but it is
+      NOT independent: same two 2018 creation waves (88% funded in 2018), the SAME coToken /
+      batch-distributor cluster at the same rate as confirmed players (~46% vs ~52%), shared
+      2nd-hop funders, 100% swept in 2026 to the same drain collectors. It is the pooled-betting
+      + reserve-wallet wing of the same operation. See summary.json
+      TASK_characterise_the_non_lastwinner_subset (supersedes the earlier "60% did call LW",
+      which was measured on the looser lw_participant=='no' pool).
 - Funding: ~2/3 of the fleet's wallets were first-funded by an ETH WITHDRAWAL from an
   exchange hot wallet - HTX/Huobi (5: 0x4ce9f39d3a, 0x1d1e10e8c6, 0xecd8b3877d, 0xeb6d43fe24,
   0x25c6459e5c) + BW.com (1: 0x73957709). Sent-tx counts 12k-773k, ~700-900 counterparties per
@@ -112,6 +117,64 @@ OPEN QUESTIONS (ranked) + HOW TO ATTACK EACH
    -> If a cracked-key structure is ever published (e.g. "top N bits zero", "keccak(seed|counter)"),
       test it against data/drained_eoas.csv.
    -> Distinguishes "finite exposure" (a file) from "open-ended" (a reproducible RNG bug).
+   UPDATE 2026-09-09 (scratch/app_history_findings.md §6b):
+   - The 2018 guide (archived at web.archive.org) confirms LW's app
+     had an on-device BIP39 "create wallet" flow + a PIN "for payment verification" (probably
+     signing auth, NOT a seed passphrase). That is the surface for vector (a).
+   - "LW copied FoMo3D's keygen" is a broken inference: FoMo3D shipped NO wallet (SECBIT's weak
+     keys were Trust Wallet's iOS build; FoMo3D players merely used it). BUT the timeline does
+     NOT clear LW: dependency pins mean upstream fixes don't reach an app until it rebuilds, and
+     SECBIT's chain (trust-core 0.1.2 / trust-keystore 0.4.3 = 2018-08-08; trust-wallet-ios =
+     2018-08-21) was still vulnerable when LW launched 2018-08-06. LW's app was v1.0.0, the site
+     404'd by 2018-10-12, and there's no sign it was ever updated => one never-patched build
+     minted BOTH the Aug and Nov 2018 fleet waves (explains the whole-fleet roster). Needs
+     confirming LW used trust-core / trezor-crypto / a copied srand(time()) snippet - the binary.
+   - FEASIBILITY: the fleet's key-gen window is ~2 wk (Aug) + ~1 mo (Nov) 2018 ~= 3.8M one-sec
+     timestamps. A SECBIT-style regeneration over that window = minutes of compute and recovers
+     the WHOLE fleet in one pass - matches "one entity, complete 44k roster, uniform drain".
+     0xA707's 11-16 independent fleet hits are spread across the launch fortnight (not a lucky
+     narrow guess) => a real fraction of the fleet has keys in a regenerable class. Counter:
+     0xA707 was publicly tied by TRM to the 2022 LastPass breach (credential theft, not RNG).
+   - STRONG NEW EVIDENCE 2026-09-09 (§6b.1): the LW app auto-generates
+     the account NAME as `[A-Za-z]{15}` + a 13-digit `Date.now()` MILLISECOND timestamp, and
+     registers it on-chain via registerNameXID. 99/99 sampled names match exactly; the embedded
+     ms precedes the on-chain tx by a median 22s. So for the ~38% of the fleet that registered a
+     name (~13k wallets) the wallet-creation millisecond is PUBLIC in calldata - a regeneration
+     no longer needs to bound the seed, the name gives it to ~1000ms. The 15-char prefix is a
+     public sample of the app's client-side RNG stream. Date.now()+[A-Za-z] strings => the
+     generator is JAVASCRIPT (RN/Cordova/webview), so the precedent is a weak JS Math.random()/
+     Date-seeded wallet RNG, not only the trezor-crypto C bug. Also: 95% of fleet wallets' first
+     LW tx is their nonce-0 tx (app-minted, not imported); gas limit 800000 on 97% (app-hardcoded,
+     scripted); 254/259 distinct referrer codes (broad flat pyramid, affCode never 0); funding
+     NOT relayer-sponsored (67% straight from the 6 HTX/BW hot wallets, 86 distinct funders).
+   - CENSUS 2026-09-09 (app_history_findings.md §6b.1b; 1,600 drained vs 1,600 undrained LW players):
+     the WHOLE LW playerbase is app-minted, and the drained set is a slightly PURER cut. Shared
+     signals ~equal (app auto-name ~40%/38% of callers; human-chosen name 0 of 1311 / 1 of 1561).
+     BUT the imported-wallet tail differs ~6x: genuine pre-deploy/external wallets = 0.9% of
+     drained callers vs 5.8% of undrained; nonce-0 first-LW-tx 94.2% vs 87.9%. => the drainer's
+     reach ~= exactly the app keyspace; it barely touched the ~6% who played with their own
+     MetaMask/imToken wallet. A MODEST lean toward weak-RNG regeneration (an attacker who
+     regenerated the app keyspace cannot reach external keys); not proof (a keystore leak could
+     also miss non-custodied imports). Blast radius if weak: the full ~63k+ app userbase, not
+     just the drained 44k (~19k undrained left = empty). App-pattern Date.now() span
+     2018-08-06 14:38:44 UTC -> mid-Nov 2018, genuine ms resolution (1/1127 end in 000),
+     name-ms -> reg tx median 21s.
+   - BLOCKED on the artifact: OSS bucket lastwinnerapp.oss-cn-shanghai.aliyuncs.com now returns
+     NoSuchBucket; Wayback only has 2020 parking-page captures of lastwinner_1.0.0.apk / lw.js.
+     Next: CN APK mirrors (应用宝/豌豆荚/APKPure history), an archived iOS .ipa, or a CN decompile.
+   - REGENERATION PoC 2026-09-09 (local, not published): NEGATIVE. Sprayed 30 drained
+     registerNameXID wallets. (A) native srand(time())+rand() - 6 rand() models (MSVC/POSIX/Apple
+     64+32/MINSTD/glibc-TYPE3), ±120s window + uint32/64 casts, entropy->{raw|keccak|BIP32-seed|
+     BIP39-12|BIP39-24} x {m/44'/60'/0'/0/0, .../0}: 0 hits. (B) prefix seed-lock - 9 PRNGs (those
+     + 9301-LCG + mulberry32 + sfc32 + MT19937), 6 char-maps, ±1800s on second AND ms: 0 streams
+     reproduce the 15-char name prefix on ANY of 30. => the easily-bruteable weak-RNG forms are
+     RULED OUT. Left: (1) auto-seeded Math.random() (V8 xorshift128+ / JSC) needing SMT state-
+     recovery from the 15 quantised prefix chars (z3 installed; real project, uncertain); (2) model
+     gaps (glibc warmup, alphabet order, PIN-as-passphrase, exotic path); (3) the KEY used a real
+     CSPRNG and only the NAME is weak -> keys not derivable, points to a keystore/backend leak
+     (this negative tilts slightly that way). Pipeline verified vs the Trezor abandon..about vector
+     + a synthetic wallet; drop in the real algo (from the binary or one ground-truth seed) and
+     the whole name corpus falls.
 
 2. CONSOLIDATION vs THEFT. Would flip toward theft if the vector is a reproducible weak RNG
    (anyone can regenerate keys). Would flip toward consolidation if it's a single keystore only
@@ -124,6 +187,15 @@ OPEN QUESTIONS (ranked) + HOW TO ATTACK EACH
    cover; cluster the fleet by 2nd-hop funder (the wallet that funded the Huobi-withdrawal
    recipient is more informative); check the Ant Swarm promoter wallets if 2018 Chinese sources
    name any. The deployer 0xeae69cad is a throwaway with no links.
+   ECONOMICS (measured 2026-09-09, see summary.json TASK_how_profitable_was_the_2018_farming
+   _for_the_fleet): the fleet LOST at the game - ~49,000 ETH wagered into the LW contract,
+   ~30,800 ETH back (~-38%, 89% of a 280-wallet sample net-negative), plus heavy 2018 gas. The
+   ~4-4.5k ETH the 2026 drainer is sweeping is leftover unspent bankroll, NOT winnings. Two
+   readings, unresolved: (A) these are the operator's own wash-trading bots and the loss is an
+   internal volume-faking expense (flows to dev fee / dividend+airdrop pools / pot the operator
+   also touched); (B) they are independent marks and the ~18.5k ETH is a real loss to earlier
+   keyholders + the ~2-5% dev fee + the SEPARATE Kraken-funded airdrop group BAPT-LW20
+   (~12,948 ETH) + the ~7,754 ETH pot winner (never traced).
 
 4. SIZE THE PERMANENTLY-STUCK ETH. -- RESOLVED 2026-09-09. Full scan done: 42,820 / 47,183
    non-drained-unclaimed addresses (99.98% of the 2,424.9 ETH). Result:
@@ -139,9 +211,17 @@ OPEN QUESTIONS (ranked) + HOW TO ATTACK EACH
    NB: 0xa271266e ("sequential-pID batch funder" in infra_addresses.csv) is a plain
    address-poisoning spammer, NOT part of the drain and NOT doing pID rebinds.
 
-5. CHARACTERISE THE NON-LASTWINNER ~15%. ~6,500 drained wallets never called the contract.
-   Are they proxy-mediated players (their contract played), pure reserve wallets, or used for
-   other 2018 ventures? Check their 2018 outbound for other game contracts / DEXes.
+5. CHARACTERISE THE NON-LASTWINNER SUBSET. [LARGELY ANSWERED 2026-09-09 - see summary.json
+   TASK_characterise_the_non_lastwinner_subset] The genuine
+   non-participant set (touched_lastwinner=unknown AND looseETH-only, 7,654 addrs) is NOT an
+   independent trove: ~1% ever touched the game contract, 0% touched FoMo3D, but 88% were
+   funded in the two 2018 fleet waves, ~46% used the same coToken / batch-distributor cluster
+   as confirmed players (vs ~52%), and 100% were swept in 2026 to the same collectors. ~46% =
+   pooled-betting wing (deposited to coToken; the pool/a proxy played), ~54% = plain
+   reserve/staging wallets. Not fully answered: proxy-mediated play was inferred, not traced
+   tx-by-tx (would need to walk coToken's own LastWinner calls and match beneficiaries); and
+   whether the ~54% reserve wallets ever did anything for OTHER 2018 ventures (DEXes / other
+   games) is unchecked beyond FoMo3D.
 
 6. DOWNSTREAM OF THE PARKED ETH. 0xe4a219fbed (2,907), 0x8d7c20e3 (102), 0x5723168b (~62),
    0x220ecbb6 (20). None cashed out as of early Sep 2026. Monitor. Also identify

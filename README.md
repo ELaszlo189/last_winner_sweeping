@@ -64,6 +64,13 @@ list of things that could be wrong: [`llm.txt`](./llm.txt).*
   *substance* (a large 2018 farming set manufacturing volume) checks out; the *figure* is a
   soft contemporaneous estimate, and **no single "bankroll" entity is identified** — the six
   wallets that funded most of the fleet are HTX/Huobi and BW.com exchange hot wallets.
+- **The fleet lost money at the game.** Sampled, it wagered **~49,000 ETH** into the LastWinner
+  contract over its life and got **~30,800 ETH** back — a **~38% loss**, with **89%** of
+  wallets net‑negative. So the ~4–4.5k ETH being drained in 2026 is **leftover unspent
+  bankroll, not winnings**. Whether that ~18.5k ETH loss is a real transfer to outside winners
+  (dev fee, earlier keyholders, the Kraken‑funded airdrop group BAPT‑LW20, the pot winner) or
+  an internal cost of the operator's own wash‑trading is unresolved. See `summary.json` →
+  `TASK_how_profitable_was_the_2018_farming_for_the_fleet`.
 
 ## 2. What happened in 2026
 
@@ -123,6 +130,12 @@ Not proof — a best inference. The signals, strongest first:
    controlled set now**.
 6. **LastWinner‑specific.** ~85% provably touched the LastWinner contract; 0% of a sampled
    subset ever touched the original FoMo3D.
+7. **The non‑playing wallets belong too.** The ~7,650 swept wallets that *never* touched the
+   game contract (~1% direct‑interaction rate on a full‑history sample) are still bound in:
+   88% funded in the two 2018 waves, ~46% used the same coToken / batch‑distributor cluster as
+   confirmed players, and 100% were swept in 2026 to the same collectors. They are the
+   pooled‑betting + reserve‑wallet wing, not an unrelated trove. (Details:
+   `summary.json` → `TASK_characterise_the_non_lastwinner_subset`.)
 
 **Against:** the funding route is a weak signal, ~56% are *not* in the coToken pool, and 2018
 behaviour is heterogeneous (5–50 tx, varied gas). So it could instead be a farm **plus**
@@ -199,9 +212,13 @@ checkpoint and take a while.
 - **Consolidation vs. theft is ~50/50 and unresolved.** Do not present it as proven either way.
 - The "scam / pyramid" framing of LastWinner is **2018 reporting** (cited in `SOURCES.md`), not
   an original finding here.
-- `touched_lastwinner = unknown` for ~19% of the drained set is a **data‑completeness limit**
-  (the caller scan stops mid‑Sep 2018), not a claim that those wallets are unrelated.
-- The ETH being swept is overwhelmingly a **bot operation's own farmed dividends**, with a
+- `touched_lastwinner = unknown` for ~19% of the drained set means **"not confirmed in the
+  caller scan"** (which stops mid‑Sep 2018), not "confirmed never touched". That said, the
+  tight non‑participant subset (`unknown` *and* loose‑ETH‑only, 7,654 addrs) genuinely almost
+  never played — but it is still part of the operation via the pooling layer and the 2026
+  drain infra (see *Why the ~44k wallets are treated as one set*, point 7).
+- The ETH being swept is overwhelmingly **leftover 2018 farming‑bot bankroll** (unspent
+  working capital — the fleet *lost* ~38% at the game, it did not accumulate dividends), with a
   small minority of apparently‑real players mixed in — not, in the main, innocent retail savings.
 
 ## License / use
